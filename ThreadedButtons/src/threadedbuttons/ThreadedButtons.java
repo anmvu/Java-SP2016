@@ -10,8 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.*;
 /**
  *
  * An Vu
@@ -77,6 +76,8 @@ public class ThreadedButtons {
     
     static class ColorChange extends Thread implements ActionListener{
 
+        public static long last =  System.currentTimeMillis();
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             JButton bx = (JButton)e.getSource();
@@ -86,15 +87,20 @@ public class ThreadedButtons {
      
         }
         
+        
         public void run(){
             while(true){
-                for(int i = 0; i < buttons.size(); i++){
-                    int r = rand.nextInt(256);
-                    int g = rand.nextInt(256);
-                    int b = rand.nextInt(256);
-                    Color random = new Color(r,g,b);
-                    if(!pressed.get(i)) buttons.get(i).setBackground(random);
-                }  
+                long current = System.currentTimeMillis();
+                if (current - last > 1000){
+                    for(int i = 0; i < buttons.size(); i++){
+                        int r = rand.nextInt(256);
+                        int g = rand.nextInt(256);
+                        int b = rand.nextInt(256);
+                        Color random = new Color(r,g,b);
+                        if(!pressed.get(i)) buttons.get(i).setBackground(random);
+                    }
+                    last = current;
+                }
             }
         }
     }
