@@ -10,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * An Vu
@@ -26,7 +28,7 @@ public class ThreadedButtons {
     static JFrame jf;
     static JPanel jp;
     static ArrayList<JButton> buttons;
-    static ArrayList<JButton> pressed;
+    static ArrayList<Boolean> pressed;
     static Random rand;
     
     public static void createButtons(){
@@ -40,6 +42,7 @@ public class ThreadedButtons {
             Color random = new Color(r,g,b);
             butt.setBackground(random);
             buttons.add(butt);
+            pressed.add(false);
         }
     }
     
@@ -53,13 +56,13 @@ public class ThreadedButtons {
     public static void main(String[] args) {
         // TODO code application logic here
         //mac stuff
-        /*try{
+        try{
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch(Exception e){
             e.printStackTrace();
-        }*/
+        }
         buttons = new ArrayList<JButton>();
-        pressed = new ArrayList<JButton>();
+        pressed = new ArrayList<Boolean>();
         jf = new JFrame("Change Colors all the times");
         jf.setSize(600,600);
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -77,12 +80,10 @@ public class ThreadedButtons {
         @Override
         public void actionPerformed(ActionEvent e) {
             JButton bx = (JButton)e.getSource();
-            if(buttons.remove(bx)){
-                pressed.add(bx);
-            }
-            else if (pressed.remove(bx)){
-                buttons.add(bx);
-            }
+            int found = buttons.indexOf(bx);
+            if(pressed.get(found)) pressed.set(found,false);
+            else pressed.set(found,true);
+     
         }
         
         public void run(){
@@ -92,7 +93,7 @@ public class ThreadedButtons {
                     int g = rand.nextInt(256);
                     int b = rand.nextInt(256);
                     Color random = new Color(r,g,b);
-                    buttons.get(i).setBackground(random);
+                    if(!pressed.get(i)) buttons.get(i).setBackground(random);
                 }  
             }
         }
