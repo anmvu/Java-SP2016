@@ -1,0 +1,13 @@
+public class ReallyBad{
+	public static void man(String[] args){
+		System.out.println("Hello world!");
+	}
+}
+
+import
+java.lang
+printstream - print & println(adds special character)
+jdk - java dev kit- includes compiler
+byte code -> jdk --- cannot run byte code on earlier version of jre
+
+netbeans/eclipse/
