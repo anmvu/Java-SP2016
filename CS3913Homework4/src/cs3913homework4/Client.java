@@ -4,31 +4,16 @@
  * and open the template in the editor.
  */
 package cs3913homework4;
-
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import java.net.*;
-
+import cs3913homework4.Server;
 /**
- *Homework 4
- * Instant Messaging
- * PART 1:
-server component - runs in the background - no graphical interface - listens for connections - has protocol specifications
-need to get name of user and lines that come in from a connection and rebroadcasted to all the other connections in the server
-
-Client:
-	2 screens
-	- text area
-	- text input at the bottom - push send = sent to server
-	when starts, asks person for their name
-	when connected, that screen goes away, connection establishes to server and chat shows
-	upon connection, greet, accept and anything after that gets rebroadcasted
- * 
- * 
- * @author An
+ *
+ * @author Annie Vuvu
  */
-public class CS3913Homework4 {
+public class Client {
 
     /**
      * @param args the command line arguments
@@ -46,7 +31,7 @@ public class CS3913Homework4 {
             jf.setSize(800,600);
             jp = new JPanel();
             submit = new JButton("Submit");
-            ServerSocket ss = new ServerSocket(5190);
+            ServerSocket ss = Server.ss;
             while(true){
                Socket sock = ss.accept();
                Scanner sin = new Scanner(sock.getInputStream());
@@ -104,23 +89,4 @@ class Log{
     }
 }
 
-class ProcessClient extends Thread{
-    Socket sock;
-    String handle;
-    String ip;
-    ProcessClient(Socket newSock,String newH, String newip){sock = newSock; handle=newH; ip = newip;}
-    @Override
-    public void run(){
-        try{
-            Scanner sin =  new Scanner(sock.getInputStream());
-            PrintStream sout = new PrintStream(sock.getOutputStream());
-            while(sock.isConnected()){
-                String line = sin.nextLine();
-                sout.print(line+"\r\n");
-                System.out.println(sock.getInetAddress().getHostAddress()+": "+ line);
-                
-            }
-            sock.close();
-        }catch(IOException e){}
-    }
-}
+
