@@ -8,28 +8,20 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import java.net.*;
-import cs3913homework4.Client;
 /**
  *
- * @author Annie Vuvu
+ * @author An Vu
  */
 public class Server {
     
-    public static ServerSocket ss;
+    public static ArrayList<Socket> users = new ArrayList<Socket>();
     public static void main(String[] args) {
         try{
-           ss = new ServerSocket(5190);
+           ServerSocket ss = new ServerSocket(5190);
             while(true){
                Socket sock = ss.accept();
-               Scanner sin = new Scanner(sock.getInputStream());
-               PrintStream sout= new PrintStream(sock.getOutputStream());
-               String line = sin.nextLine();
-               while(l.getList('u').contains(line)){
-                   line = sin.nextLine();
-               }
-               String handle = line;
-               String ip =sock.getInetAddress().getHostAddress();
-               new ProcessClient(sock,handle,ip).start();
+               users.add(sock);
+               new ProcessClient(sock).start();
             }
         }catch(IOException e){}
     }
@@ -37,21 +29,31 @@ public class Server {
 
 class ProcessClient extends Thread{
     Socket sock;
-    String handle;
-    String ip;
-    ProcessClient(Socket newSock,String newH, String newip){sock = newSock; handle=newH; ip = newip;}
+    String username;
+    ProcessClient(Socket newSock){sock = newSock;}
     @Override
     public void run(){
         try{
             Scanner sin =  new Scanner(sock.getInputStream());
             PrintStream sout = new PrintStream(sock.getOutputStream());
+            username = sin.nextLine();
             while(sock.isConnected()){
-                String line = sin.nextLine();
-                sout.print(line+"\r\n");
-                System.out.println(sock.getInetAddress().getHostAddress()+": "+ line);
+                String line = "";
+                try {
+                    line = sin.nextLine();
+                }
+                catch (NoSuchElementException e) { 
+                    sock.close();
+                }
+                if (!"".equals(line)) {
+                    for (Socket user : Server.users) {
+                        PrintStream cout = new PrintStream(user.getOutputStream());
+                        cout.printf("%s: %s\r\n", username, line);
+                    }
+                }
                 
             }
-            sock.close();
+            Server.users.remove(sock);
         }catch(IOException e){}
     }
 }
