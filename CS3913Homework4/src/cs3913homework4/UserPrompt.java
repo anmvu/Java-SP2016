@@ -49,7 +49,7 @@ public class UserPrompt extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 36)); // NOI18N
         jLabel1.setText("Welcome!");
 
-        jLabel2.setText("Port Number");
+        jLabel2.setText("IP Address");
 
         jLabel3.setText("Username");
 

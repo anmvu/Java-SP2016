@@ -21,6 +21,8 @@ public class ClientChat extends javax.swing.JFrame {
     
     /**
      * Creates new form ClientChat
+     * @param sock
+     * @param user
      */
     public ClientChat(Socket sock, String user) {
         ss = sock;
@@ -32,10 +34,9 @@ public class ClientChat extends javax.swing.JFrame {
         ps.print(username + "\r\n");
       
         initComponents();
-        this.setLocationRelativeTo(null); 
-        this.getRootPane().setDefaultButton(jButton1);
-        
-        // Create thread to read from server
+        //this.setLocationRelativeTo(jTextArea1);
+        jTextArea1.getRootPane().setDefaultButton(jButton1);
+
         new ServerRead(ss, jTextArea2).start();
     }
 
@@ -56,6 +57,7 @@ public class ClientChat extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jTextArea2.setEditable(false);
         jTextArea2.setColumns(20);
         jTextArea2.setRows(5);
         jScrollPane1.setViewportView(jTextArea2);
@@ -81,8 +83,10 @@ public class ClientChat extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 451, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
+                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addGap(10, 10, 10)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
