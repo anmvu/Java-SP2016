@@ -24,8 +24,7 @@ public class UserPrompt extends javax.swing.JFrame {
     
     public UserPrompt() {
         initComponents();
-        this.setLocationRelativeTo(null);
-        this.getRootPane().setDefaultButton(jButton1);
+
     }
 
     /**

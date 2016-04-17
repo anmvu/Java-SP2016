@@ -37,6 +37,7 @@ class ProcessClient extends Thread{
             Scanner sin =  new Scanner(sock.getInputStream());
             PrintStream sout = new PrintStream(sock.getOutputStream());
             username = sin.nextLine();
+            
             while(sock.isConnected()){
                 String line = "";
                 try {
@@ -47,8 +48,8 @@ class ProcessClient extends Thread{
                 }
                 if (!"".equals(line)) {
                     for (Socket user : Server.users) {
-                        PrintStream cout = new PrintStream(user.getOutputStream());
-                        cout.printf("%s: %s\r\n", username, line);
+                        PrintStream history = new PrintStream(user.getOutputStream());
+                        history.printf("%s: %s\r\n", username, line);
                     }
                 }
                 
