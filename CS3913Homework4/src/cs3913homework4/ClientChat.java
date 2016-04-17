@@ -36,7 +36,7 @@ public class ClientChat extends javax.swing.JFrame {
         this.getRootPane().setDefaultButton(jButton1);
         
         // Create thread to read from server
-        new ServerRead(ss, jTextArea1).start();
+        new ServerRead(ss, jTextArea2).start();
     }
 
     /**
