@@ -33,14 +33,13 @@ public class Clock {
 }
 
 class UpdatePanel extends Thread{
-    JPanel jp;
-    UpdatePanel(JPanel newjp){jp = newjp;}
+    GraphicsPanel jp;
+    UpdatePanel(GraphicsPanel newjp){jp = newjp;}
     @Override
     public void run(){
         try{
             while(true){
-                jp.repaint();
-                //System.out.println("change");
+                jp.moveAngle();
                 sleep(100);
             }
         }catch(Exception e){}
@@ -53,49 +52,62 @@ class Hand{
 }
 
 class GraphicsPanel extends JPanel{
-    int i;
-    int hours;
-    int minutes;
-    int seconds;
+    int hour;
+    int minute;
+    int second;
     double length;
     static double width;
     static double height;
-    Hand hour;
-    Hand minute;
-    Hand second;
+    Hand[] hours;
+    Hand[] minutes;
+    Hand[] seconds;
     GraphicsPanel(double newWidth, double newHeight){
-        i = 0;
-        hours = 0;
-        minutes = 0;
-        seconds = 0;
+        hour = 0;
+        minute = 0;
+        second = 0;
         width = newWidth;
         height = newHeight;
-        int length;
+        hours = new Hand[24];
+        minutes = new Hand[60];
+        seconds = new Hand[600];
+        int j = 0;
+        int k = 0;
+        int l = 0;
+        int length = (int)height;
         if (width < height) length = (int)width;
-        else length = (int)height;
-        minute = new Hand(); 
-        minute.x = (int)(length*0.4*Math.sin(Math.toRadians(minutes)));
-        minute.y = (int)(length*0.4*Math.cos(Math.toRadians(minutes)));
-        hour = new Hand();
-        hour.x = (int)(length*0.6*Math.sin(Math.toRadians(hours)));
-        hour.y = (int)(length*0.6*Math.cos(Math.toRadians(hours)));
-        second = new Hand();
-        second.x = (int)(length*0.8*Math.sin(Math.toRadians(seconds)));
-        second.y = (int)(length*0.8*Math.cos(Math.toRadians(seconds)));
-        System.out.println("Seconds: " + seconds + " coords: " + second.x + ','+ second.y);
-        System.out.println("Minutes: " + minutes + " coords: " + minute.x + ',' + minute.y);
-        System.out.println("Hours: " + hours + " coords: " + hour.x + ',' + hour.y);  
-        System.out.println("Width" + width);
-        System.out.println("Height" + height);
+        for(double i = 360; i > 0; i -= 0.6){
+            Hand sec = new Hand();
+            sec.x = (int)(length*0.45*Math.sin(Math.toRadians(i+180)));
+            sec.y = (int)(length*0.45*Math.cos(Math.toRadians(i+180)));
+            seconds[j++] = sec;
+        }
+        for(int i = 360; i > 0; i -= 6){
+            Hand min = new Hand(); 
+            min.x = (int)(length*0.4*Math.sin(Math.toRadians(i+180)));
+            min.y = (int)(length*0.4*Math.cos(Math.toRadians(i+180)));
+            minutes[k++] = min;
+        }
+        for (int i = 360; i > 0; i -= 15){
+            Hand h = new Hand();
+            h.x = (int)(length*0.3*Math.sin(Math.toRadians(i+180)));
+            h.y = (int)(length*0.3*Math.cos(Math.toRadians(i+180)));
+            hours[l++] = h;
+        }
+        
     }
     
     void moveAngle(){
-        if(hours == 360) hours = 0;
-        else hours += 6;
-        if(minutes == 360) minutes = 0;
-        else minutes += 30;
-        if(seconds == 360) seconds = 0;
-        else seconds += 6;
+        if(second == 599){
+            second = 0;
+            minute++;
+            if((minute+1) % 30 == 0){
+                hour++;
+                if(minute == 59) minute = 0;
+            }
+            if(hour == 23) hour = 0;
+        }
+        else second++;
+        
         repaint();
     }
     
@@ -103,8 +115,6 @@ class GraphicsPanel extends JPanel{
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         int boxSize;
-        double width;
-        double height;
         width = getSize().getWidth();
         height = getSize().getHeight();
         if (width < height) boxSize = (int)width;
@@ -119,19 +129,29 @@ class GraphicsPanel extends JPanel{
         Hand hour2 = new Hand();
         Hand minute2 = new Hand();
         Hand second2 = new Hand();
-        hour2.x = hour.x + middleWidth;
-        hour2.y = hour.y + middleHeight;
-        minute2.x = minute.x + middleWidth;
-        minute2.y = minute.y + middleHeight;
-        second2.x = second.x + middleWidth;
-        second2.y = second.y + middleHeight;
-        g.setColor(Color.black);
+        hour2.x = hours[hour].x + middleWidth;
+        hour2.y = hours[hour].y + middleHeight;
+        minute2.x = minutes[minute].x + middleWidth;
+        minute2.y = minutes[minute].y + middleHeight;
+        second2.x = seconds[second].x + middleWidth;
+        second2.y = seconds[second].y + middleHeight;
+        g.setColor(Color.green);
         g.drawLine(hour2.x,hour2.y,middleWidth, middleHeight);
         g.setColor(Color.red);
         g.drawLine(minute2.x,minute2.y,middleWidth, middleHeight);
         g.setColor(Color.blue);
         g.drawLine (second2.x,second2.y,middleWidth, middleHeight);
-        g.drawString("Here", middleWidth, middleHeight);
+        
+        g.setColor(Color.black);
+        int h = 0;
+        for(int i = 0; i < 360; i += 30){
+            String time = Integer.toString(h);
+            if(h == 0) time = "12";
+            h++;
+            int x =(int) (boxSize*0.4*Math.cos(Math.toRadians(i-90)) + middleWidth-4);
+            int y = (int)(boxSize*0.4*Math.sin(Math.toRadians(i-90)) + middleHeight+5);
+            g.drawString(time,x ,y );
+        }
    
     }
 }
