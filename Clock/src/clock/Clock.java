@@ -6,7 +6,7 @@
 package clock;
 import java.awt.*;
 import javax.swing.*;
-
+import java.util.*;
 /**
  *
  * @author An
@@ -58,13 +58,16 @@ class GraphicsPanel extends JPanel{
     double length;
     static double width;
     static double height;
+    Calendar c = Calendar.getInstance();
     Hand[] hours;
     Hand[] minutes;
     Hand[] seconds;
     GraphicsPanel(double newWidth, double newHeight){
-        hour = 0;
-        minute = 0;
-        second = 0;
+        hour = c.get(Calendar.HOUR)*2;
+        minute = c.get(Calendar.MINUTE);
+        if(minute >= 30) hour+=1;
+        second = c.get(Calendar.SECOND)*10+4;
+//        System.out.println(hour);
         width = newWidth;
         height = newHeight;
         hours = new Hand[24];
@@ -152,6 +155,9 @@ class GraphicsPanel extends JPanel{
             int y = (int)(boxSize*0.4*Math.sin(Math.toRadians(i-90)) + middleHeight+5);
             g.drawString(time,x ,y );
         }
+        c = Calendar.getInstance();
+        String time = ""+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE)+":"+c.get(Calendar.SECOND);
+        g.drawString(time,middleWidth,middleHeight);
    
     }
 }
